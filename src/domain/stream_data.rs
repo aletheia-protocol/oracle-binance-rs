@@ -10,6 +10,7 @@ pub struct DepthData {
 
 #[derive(Debug, Deserialize)]
  pub struct StreamData {
+    #[allow(dead_code)]
     pub stream: String,
     pub data: DepthData,
 }
