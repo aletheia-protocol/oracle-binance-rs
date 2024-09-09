@@ -807,6 +807,7 @@ dependencies = [
  "env_logger",
  "futures-util",
  "log",
+ "once_cell",
  "ordered-float",
  "serde",
  "serde_json",
