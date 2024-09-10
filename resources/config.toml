@@ -1,4 +1,4 @@
 [default]
 server_port = 8080
 trading_pair = "BTCFDUSD"
-book_depth = 10
+book_depth = 10 #can be 5,10,20 - nothing else

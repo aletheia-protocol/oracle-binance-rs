@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use crate::domain::order_book::{OrderBook, OrderBookTop};
+use crate::domain::order_book::{OrderBook, OrderBookEntry, OrderBookTop};
 use crate::domain::stream_data::StreamData;
 
 pub static ORDER_BOOK: Lazy<Arc<Mutex<OrderBook>>> = Lazy::new(|| {
@@ -26,5 +26,10 @@ impl OrderBookService {
     pub async fn get_top_of_book(&self) -> Option<OrderBookTop> {
         let book = ORDER_BOOK.lock().await;
         book.get_top()
+    }
+
+    pub async fn get_full_book(&self) -> (Option<Vec<OrderBookEntry>>, Option<Vec<OrderBookEntry>>) {
+        let book = ORDER_BOOK.lock().await;
+        book.get_full_book()
     }
 }
