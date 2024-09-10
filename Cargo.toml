@@ -1,9 +1,10 @@
 [package]
-name = "oracle-binance"
+name = "oracle_binance"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+async-trait = "0.1"
 binance_spot_connector_rust = { git = "https://github.com/binance/binance-spot-connector-rust.git", features = ["enable-tokio-tungstenite"] }
 tokio = { version = "1", features = ["full"] }
 futures-util = "0.3"
@@ -19,5 +20,5 @@ warp = "0.3"
 
 
 [[bin]]
-name = "oracle-binance"
+name = "oracle_binance"
 path = "src/main.rs"

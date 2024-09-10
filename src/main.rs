@@ -7,7 +7,6 @@ mod config;
 use crate::ports::ws_client_order_book::start_websocket;
 use crate::adapters::rest_api::create_rest_api;
 use crate::config::CONFIG;
-use env_logger;
 
 #[tokio::main]
 async fn main() {
@@ -26,7 +25,7 @@ async fn main() {
     let rest_api_handle = tokio::spawn(async {
         log::info!("Starting REST API server on port {}...", CONFIG.default.server_port);
         let api = create_rest_api();
-        warp::serve(api).run(([0, 0, 0, 0], CONFIG.default.server_port.into())).await;
+        warp::serve(api).run(([0, 0, 0, 0], CONFIG.default.server_port)).await;
     });
 
     // Wait for both tasks to finish (if they ever finish)

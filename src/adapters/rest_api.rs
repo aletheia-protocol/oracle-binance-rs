@@ -1,4 +1,5 @@
 use warp::Filter;
+use crate::core::order_book_service::OrderBookServiceTrait;
 use crate::core::order_book_service::OrderBookService;
 use crate::domain::order_book::OrderBookEntry;
 

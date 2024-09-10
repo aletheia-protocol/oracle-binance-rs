@@ -1,4 +1,4 @@
-use crate::core::order_book_service::OrderBookService;
+use crate::core::order_book_service::{OrderBookService, OrderBookServiceTrait};
 use crate::domain::stream_data::StreamData;
 use crate::config::CONFIG;
 use binance_spot_connector_rust::market_stream::partial_depth::PartialDepthStream;
@@ -14,7 +14,7 @@ pub async fn start_websocket() {
         .expect("Failed to connect");
 
     conn.subscribe(vec![
-        &PartialDepthStream::from_100ms(CONFIG.default.trading_pair.as_str(), CONFIG.default.book_depth.into()).into()
+        &PartialDepthStream::from_100ms(CONFIG.default.trading_pair.as_str(), CONFIG.default.book_depth).into()
     ])
         .await;
 

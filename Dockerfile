@@ -31,7 +31,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled binary from the builder stage to the final image
-COPY --from=builder /usr/src/app/target/release/oracle-binance /usr/local/bin/oracle-binance
+COPY --from=builder /usr/src/app/target/release/oracle_binance /usr/local/bin/oracle_binance
 
 # Set the working directory for the application
 WORKDIR /usr/src/app
@@ -43,4 +43,4 @@ COPY resources/config.toml ./resources/
 EXPOSE 8080
 
 # Command to run the application
-CMD ["oracle-binance"]
+CMD ["oracle_binance"]
