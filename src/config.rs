@@ -9,11 +9,13 @@ use once_cell::sync::Lazy;
 pub struct DefaultConfig {
     pub server_port: u16,
     pub trading_pair: String,
+    pub book_depth: u16,
 }
 
 enum EnvVar {
     ServerPort,
     TradingPair,
+    BookDepth,
 }
 
 #[derive(Debug, Deserialize)]
@@ -21,46 +23,69 @@ pub struct AppConfig {
     pub default: DefaultConfig,
 }
 
+// Lazy static configuration loading
 pub static CONFIG: Lazy<Arc<AppConfig>> = Lazy::new(|| {
-    Arc::new(load_config_from_env_or_file().expect("Failed to load configuration"))
+    log::info!("Configuration loading ...");
+    match load_config_from_env_or_file() {
+        Ok(config) => Arc::new(config),
+        Err(e) => {
+            log::error!("Failed to load configuration: {:?}", e);
+            panic!("Failed to load configuration: {:?}", e);
+        }
+    }
 });
 
 impl EnvVar {
+    // Returns the environment variable name as a &str
     fn as_str(&self) -> &str {
         match self {
             EnvVar::ServerPort => "SERVER_PORT",
             EnvVar::TradingPair => "TRADING_PAIR",
+            EnvVar::BookDepth => "BOOK_DEPTH"
         }
     }
 
-    fn get_value(&self, default: &str) -> String {
-        env::var(self.as_str()).unwrap_or_else(|_| default.to_string())
+    // Fetches the value from the environment, attempts to parse it into the desired type, or returns the default value
+    fn get_value<T: std::str::FromStr + Clone>(&self, default: &T) -> T
+    where
+        T::Err: std::fmt::Debug,
+    {
+        env::var(self.as_str())
+            .ok()
+            .and_then(|val| val.parse::<T>().ok()) // Try to parse the value to type T
+            .unwrap_or_else(|| default.clone()) // Clone the default value if parsing fails
     }
 }
 
+// Loads the configuration from a file (config.toml)
 pub fn load_config() -> Result<AppConfig, Box<dyn Error>> {
     let mut settings = Config::default();
 
-    // Ładujemy konfigurację z pliku
+    // Load configuration from file
     settings.merge(File::with_name("resources/config.toml"))?;
 
-    // Parsujemy konfigurację do struktury AppConfig
+    // Parse the configuration into the AppConfig structure
     let app_config: AppConfig = settings.try_into()?;
 
     Ok(app_config)
 }
 
+// Load the configuration from environment variables, overriding values from the file if present
 pub fn load_config_from_env_or_file() -> Result<AppConfig, Box<dyn Error>> {
-    // Najpierw ładujemy konfigurację z pliku
+    // First, load the configuration from the file
     let mut config = load_config()?;
 
-    // Nadpisujemy zmienne środowiskowe, jeśli istnieją
+    // Override with environment variables if they exist
     config.default.server_port = EnvVar::ServerPort
-        .get_value(&config.default.server_port.to_string())
-        .parse::<u16>()
-        .unwrap_or(config.default.server_port);
+        .get_value(&config.default.server_port); // u16 for server_port
 
-    config.default.trading_pair = EnvVar::TradingPair.get_value(&config.default.trading_pair);
+    config.default.trading_pair = EnvVar::TradingPair
+        .get_value(&config.default.trading_pair); // String for trading_pair
+
+    config.default.book_depth = EnvVar::BookDepth
+        .get_value(&config.default.book_depth); // u16 for book_depth
+
+    log::info!("Config loaded: {:?}",config);
 
     Ok(config)
 }

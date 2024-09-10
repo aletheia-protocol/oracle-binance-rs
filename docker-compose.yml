@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  rust-app:
+    build: .
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    environment:
+      RUST_LOG: "info"
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      TRADING_PAIR: ${TRADING_PAIR:-BTCFDUSD}
+      BOOK_DEPTH: ${BOOK_DEPTH:-10}
+    volumes:
+      - ./resources/config.toml:/usr/src/app/resources/config.toml
+    networks:
+      - oracle
+networks:
+  oracle:
+    driver: bridge

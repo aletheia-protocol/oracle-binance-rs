@@ -14,7 +14,7 @@ pub async fn start_websocket() {
         .expect("Failed to connect");
 
     conn.subscribe(vec![
-        &PartialDepthStream::from_100ms(CONFIG.default.trading_pair.as_str(), 5).into()
+        &PartialDepthStream::from_100ms(CONFIG.default.trading_pair.as_str(), CONFIG.default.book_depth.into()).into()
     ])
         .await;
 
@@ -24,6 +24,7 @@ pub async fn start_websocket() {
                 let binary_data = message.into_data();
                 if let Ok(data) = std::str::from_utf8(&binary_data) {
                     if !data.contains(":null") {
+                        //log::info!("DATA {}",data);
                         if let Ok(result) = serde_json::from_str::<StreamData>(data.trim()) {
                             service.update_order_book(result).await;
                             service.print_top_of_book().await;

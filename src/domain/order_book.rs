@@ -48,10 +48,10 @@ impl OrderBook {
 
     pub fn print_top_of_book(&self) {
         if let Some((&best_bid_price, &best_bid_qty)) = self.bids.iter().next_back() {
-            println!("Best Bid: {} @ {}", best_bid_qty, best_bid_price);
+            log::info!("Best Bid: {} @ {}", best_bid_qty, best_bid_price);
         }
         if let Some((&best_ask_price, &best_ask_qty)) = self.asks.iter().next() {
-            println!("Best Ask: {} @ {}", best_ask_qty, best_ask_price);
+            log::info!("Best Ask: {} @ {}", best_ask_qty, best_ask_price);
         }
     }
 
