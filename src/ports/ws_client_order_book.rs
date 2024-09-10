@@ -1,5 +1,6 @@
 use crate::core::order_book_service::OrderBookService;
 use crate::domain::stream_data::StreamData;
+use crate::config::CONFIG;
 use binance_spot_connector_rust::market_stream::partial_depth::PartialDepthStream;
 use binance_spot_connector_rust::tokio_tungstenite::BinanceWebSocketClient;
 use futures_util::StreamExt;
@@ -13,7 +14,7 @@ pub async fn start_websocket() {
         .expect("Failed to connect");
 
     conn.subscribe(vec![
-        &PartialDepthStream::from_100ms("BTCFDUSD", 5).into()
+        &PartialDepthStream::from_100ms(CONFIG.default.trading_pair.as_str(), 5).into()
     ])
         .await;
 
@@ -25,7 +26,7 @@ pub async fn start_websocket() {
                     if !data.contains(":null") {
                         if let Ok(result) = serde_json::from_str::<StreamData>(data.trim()) {
                             service.update_order_book(result).await;
-                            //service.print_top_of_book().await;
+                            service.print_top_of_book().await;
                         } else {
                             log::error!("Failed to parse StreamData from JSON: {}", data);
                         }
