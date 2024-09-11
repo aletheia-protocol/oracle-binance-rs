@@ -1,6 +1,5 @@
 use binance_spot_connector_rust::market_stream::book_ticker::BookTickerStream;
 use crate::config::CONFIG;
-use binance_spot_connector_rust::market_stream::partial_depth::PartialDepthStream;
 use binance_spot_connector_rust::tokio_tungstenite::BinanceWebSocketClient;
 use futures_util::StreamExt;
 use log;

@@ -2,7 +2,6 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use serde::{Deserialize, Serialize};
 use crate::domain::book_ticker::{BookTickerData, BookTickerSD};
 
 // Singleton for BookTickerData shared across the application
