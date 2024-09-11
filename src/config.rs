@@ -10,12 +10,14 @@ pub struct DefaultConfig {
     pub server_port: u16,
     pub trading_pair: String,
     pub book_depth: u16,
+    pub ws_config_retry_max: u16,
 }
 
 enum EnvVar {
     ServerPort,
     TradingPair,
     BookDepth,
+    WSConfigRetryMax
 }
 
 #[derive(Debug, Deserialize)]
@@ -41,7 +43,8 @@ impl EnvVar {
         match self {
             EnvVar::ServerPort => "SERVER_PORT",
             EnvVar::TradingPair => "TRADING_PAIR",
-            EnvVar::BookDepth => "BOOK_DEPTH"
+            EnvVar::BookDepth => "BOOK_DEPTH",
+            EnvVar::WSConfigRetryMax => "WS_CONFIG_RETRY_MAX"
         }
     }
 
@@ -84,6 +87,9 @@ pub fn load_config_from_env_or_file() -> Result<AppConfig, Box<dyn Error>> {
 
     config.default.book_depth = EnvVar::BookDepth
         .get_value(&config.default.book_depth); // u16 for book_depth
+
+    config.default.ws_config_retry_max = EnvVar::WSConfigRetryMax
+        .get_value(&config.default.ws_config_retry_max); //u16 for ws retry max
 
     log::info!("Config loaded: {:?}",config);
 

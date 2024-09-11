@@ -4,7 +4,8 @@ mod adapters;
 mod ports;
 mod config;
 
-use crate::ports::ws_client_order_book::start_websocket;
+use crate::ports::ws_client_order_book;
+use crate::ports::ws_client_book_ticker;
 use crate::adapters::rest_api::create_rest_api;
 use crate::config::CONFIG;
 
@@ -17,10 +18,17 @@ async fn main() {
     log::info!("Starting application...");
 
     // Start both WebSocket and REST API in the same Tokio runtime using join!
-    let websocket_handle = tokio::spawn(async {
-        log::info!("Starting WebSocket client...");
-        start_websocket().await;
+    let websocket_order_book_handle = tokio::spawn(async {
+        log::info!("Starting OrderBook WebSocket client...");
+        ws_client_order_book::start_websocket().await;
     });
+
+    // Start both WebSocket and REST API in the same Tokio runtime using join!
+    let websocket_book_ticker_handle = tokio::spawn(async {
+        log::info!("Starting BookTicker WebSocket client...");
+        ws_client_book_ticker::start_websocket().await;
+    });
+
 
     let rest_api_handle = tokio::spawn(async {
         log::info!("Starting REST API server on port {}...", CONFIG.default.server_port);
@@ -29,5 +37,5 @@ async fn main() {
     });
 
     // Wait for both tasks to finish (if they ever finish)
-    tokio::try_join!(websocket_handle, rest_api_handle).unwrap();
+    tokio::try_join!(websocket_order_book_handle,websocket_book_ticker_handle, rest_api_handle).unwrap();
 }

@@ -1,7 +1,8 @@
 use std::collections::BTreeMap;
 use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
-use crate::domain::stream_data::StreamData;
+use crate::domain::order_book_stream_data::OrderBookSD;
+
 
 // Struct representing the order book with bids and asks
 pub struct OrderBook {
@@ -33,7 +34,7 @@ impl OrderBook {
     }
 
     // Update the order book with new data from a StreamData instance
-    pub fn update(&mut self, update: StreamData) {
+    pub fn update(&mut self, update: OrderBookSD) {
         let mut new_bids = BTreeMap::new();
         for row in update.data.bids {
             let price = row[0].parse::<f64>().unwrap();
@@ -114,7 +115,7 @@ impl OrderBook {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::stream_data::{StreamData, DepthData};
+    use crate::domain::order_book_stream_data::{OrderBookSD, DepthData};
 
     // Test updating the order book and getting the top (best bid and ask)
     #[test]
@@ -122,7 +123,7 @@ mod tests {
         let mut order_book = OrderBook::new();
 
         // Sample stream data for testing
-        let stream_data = StreamData {
+        let stream_data = OrderBookSD {
             stream: "orderBookUpdate".to_string(),
             data: DepthData {
                 last_update_id: 1,
@@ -148,7 +149,7 @@ mod tests {
         let mut order_book = OrderBook::new();
 
         // Sample stream data for testing
-        let stream_data = StreamData {
+        let stream_data = OrderBookSD {
             stream: "orderBookUpdate".to_string(),
             data: DepthData {
                 last_update_id: 1,
@@ -192,7 +193,7 @@ mod tests {
         let mut order_book = OrderBook::new();
 
         // Empty stream data (no bids, no asks)
-        let stream_data = StreamData {
+        let stream_data = OrderBookSD {
             stream: "orderBookUpdate".to_string(),
             data: DepthData {
                 last_update_id: 1,

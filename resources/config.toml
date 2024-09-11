@@ -2,3 +2,5 @@
 server_port = 8080
 trading_pair = "BTCFDUSD"
 book_depth = 10 #can be 5,10,20 - nothing else
+ws_config_retry_count = 10
+ws_config_retry_max = 20

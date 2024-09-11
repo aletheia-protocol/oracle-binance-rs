@@ -9,7 +9,7 @@ pub struct DepthData {
 }
 
 #[derive(Debug, Deserialize)]
- pub struct StreamData {
+ pub struct OrderBookSD {
     #[allow(dead_code)]
     pub stream: String,
     pub data: DepthData,

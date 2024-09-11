@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
 use crate::domain::order_book::{OrderBook, OrderBookEntry, OrderBookTop};
-use crate::domain::stream_data::StreamData;
+use crate::domain::order_book_stream_data::OrderBookSD;
 
 pub static ORDER_BOOK: Lazy<Arc<Mutex<OrderBook>>> = Lazy::new(|| {
     Arc::new(Mutex::new(OrderBook::new()))
@@ -11,7 +11,7 @@ pub static ORDER_BOOK: Lazy<Arc<Mutex<OrderBook>>> = Lazy::new(|| {
 
 #[async_trait]
 pub trait OrderBookServiceTrait: Send + Sync {
-    async fn update_order_book(&self, update: StreamData);
+    async fn update_order_book(&self, update: OrderBookSD);
     async fn print_top_of_book(&self);
     async fn get_top_of_book(&self) -> Option<OrderBookTop>;
     async fn get_full_book(&self) -> (Option<Vec<OrderBookEntry>>, Option<Vec<OrderBookEntry>>);
@@ -22,7 +22,7 @@ pub struct OrderBookService;
 #[async_trait]
 impl OrderBookServiceTrait for OrderBookService {
 
-    async fn update_order_book(&self, update: StreamData) {
+    async fn update_order_book(&self, update: OrderBookSD) {
         let mut book = ORDER_BOOK.lock().await;
         book.update(update);
     }
