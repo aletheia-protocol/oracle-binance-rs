@@ -1,24 +1,24 @@
-use binance_spot_connector_rust::market_stream::book_ticker::BookTickerStream;
+use binance_spot_connector_rust::market_stream::trade::TradeStream;
 use crate::config::CONFIG;
 use binance_spot_connector_rust::tokio_tungstenite::BinanceWebSocketClient;
 use futures_util::StreamExt;
 use log;
 use tokio::time::{sleep, Duration};
-use crate::core::book_ticker_service::{BookTickerService, BookTickerServiceTrait};
-use crate::domain::book_ticker::BookTickerSD;
+use crate::core::trade_history_service::TradeHistoryService;
+use crate::domain::trade::{TradeSD};
 
 pub async fn start_websocket() {
-    let service = BookTickerService;
+    let service = TradeHistoryService;
     let max_retries = CONFIG.default.ws_config_retry_max;
     let mut retry_count = 0;
 
     loop {
         match BinanceWebSocketClient::connect_async_default().await {
             Ok((mut conn, _)) => {
-                log::info!("WebSocket: BookTicker connection established.");
+                log::info!("WebSocket: TradeStream connection established.");
 
                 conn.subscribe(vec![
-                    &BookTickerStream::from_symbol(CONFIG.default.trading_pair.as_str()).into()
+                    &TradeStream::new(CONFIG.default.trading_pair.as_str()).into()
                 ]).await;
 
                 // Reset retry count on successful connection
@@ -30,13 +30,12 @@ pub async fn start_websocket() {
                             let binary_data = message.into_data();
                             if let Ok(data) = std::str::from_utf8(&binary_data) {
                                 //log::info!("DATA {}",data);
-                               if !data.contains(":null") {
-                                   if let Ok(result) = serde_json::from_str::<BookTickerSD>(data.trim()){
-                                       service.update_ticker(result).await;
-                                       //service.print_ticker().await;
-                                   }else {
-                                     log::error!("Failed to parse StreamData from JSON: {}", data);
-                                   }
+                                if !data.contains(":null") {
+                                    if let Ok(result) = serde_json::from_str::<TradeSD>(data.trim()){
+                                        service.add_trade(result).await;
+                                    } else {
+                                        log::error!("Failed to parse TradeSD from JSON: {}", data);
+                                    }
                                 } else {
                                     log::info!("Empty row: {}", data);
                                 }

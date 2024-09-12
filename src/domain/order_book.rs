@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
-use crate::domain::order_book_stream_data::OrderBookSD;
+use crate::domain::order_book_sd::OrderBookSD;
 
 
 // Struct representing the order book with bids and asks
@@ -115,7 +115,7 @@ impl OrderBook {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::order_book_stream_data::{OrderBookSD, DepthData};
+    use crate::domain::order_book_sd::{OrderBookSD, DepthData};
 
     // Test updating the order book and getting the top (best bid and ask)
     #[test]
