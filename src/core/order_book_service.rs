@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::sync::Arc;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
@@ -27,7 +28,6 @@ impl OrderBookServiceTrait for OrderBookService {
         book.update(update);
     }
 
-    #[warn(dead_code)]
     async fn print_top_of_book(&self) {
         let book = ORDER_BOOK.lock().await;
         book.print_top_of_book();

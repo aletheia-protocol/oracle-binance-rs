@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::sync::Arc;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
@@ -26,12 +27,12 @@ pub struct BookTickerService;
 impl BookTickerServiceTrait for BookTickerService {
     async fn update_ticker(&self, update: BookTickerSD) {
         let mut ticker = BOOK_TICKER.lock().await;
-        ticker.u = update.data.u;
-        ticker.s = update.data.s;
-        ticker.b = update.data.b;
-        ticker.B = update.data.B;
-        ticker.a = update.data.a;
-        ticker.A = update.data.A;
+        ticker.update_id = update.data.update_id;
+        ticker.symbol = update.data.symbol;
+        ticker.best_bid_price = update.data.best_bid_price;
+        ticker.best_bid_qty = update.data.best_bid_qty;
+        ticker.best_ask_price = update.data.best_ask_price;
+        ticker.best_ask_qty = update.data.best_ask_qty;
     }
 
     async fn print_ticker(&self) {
@@ -67,12 +68,12 @@ mod tests {
         let data = BookTickerSD {
             stream: "btcfdusd@bookTicker".to_string(),
             data: BookTickerData {
-                u: 123,
-                s: "BTCUSD".to_string(),
-                b: "50000.0".to_string(),
-                B: "2.0".to_string(),
-                a: "51000.0".to_string(),
-                A: "3.0".to_string(),
+                update_id: 123,
+                symbol: "BTCUSD".to_string(),
+                best_bid_price: "50000.0".to_string(),
+                best_bid_qty: "2.0".to_string(),
+                best_ask_price: "51000.0".to_string(),
+                best_ask_qty: "3.0".to_string(),
             }
         };
 
@@ -89,12 +90,12 @@ mod tests {
         let data = BookTickerSD {
             stream: "btcfdusd@bookTicker".to_string(),
             data: BookTickerData {
-                u: 123,
-                s: "BTCUSD".to_string(),
-                b: "50000.0".to_string(),
-                B: "2.0".to_string(),
-                a: "51000.0".to_string(),
-                A: "3.0".to_string(),
+                update_id: 123,
+                symbol: "BTCUSD".to_string(),
+                best_bid_price: "50000.0".to_string(),
+                best_bid_qty: "2.0".to_string(),
+                best_ask_price: "51000.0".to_string(),
+                best_ask_qty: "3.0".to_string(),
             }
         };
 

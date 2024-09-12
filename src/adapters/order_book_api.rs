@@ -3,7 +3,7 @@ use crate::core::order_book_service::OrderBookServiceTrait;
 use crate::core::order_book_service::OrderBookService;
 use crate::domain::order_book::OrderBookEntry;
 
-pub fn create_rest_api() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn create_order_book_api() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     let orderbook_top = warp::path!("orderbook" / "top")
         .and_then(move || async move {
             let service = OrderBookService;
