@@ -10,8 +10,14 @@ pub struct OrderBook {
     pub asks: BTreeMap<OrderedFloat<f64>, f64>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct FullOrderBook {
+    pub bids: Option<Vec<OrderBookEntry>>,
+    pub asks: Option<Vec<OrderBookEntry>>,
+}
+
 // Struct representing a single entry in the order book (price and quantity)
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct OrderBookEntry {
     pub price: f64,
     pub qty: f64,
@@ -89,7 +95,7 @@ impl OrderBook {
     }
 
     // Get the full order book (all bids and asks) as two vectors
-    pub fn get_full_book(&self) -> (Option<Vec<OrderBookEntry>>, Option<Vec<OrderBookEntry>>) {
+    pub fn get_full_book(&self) -> Option<FullOrderBook> {
         let bids: Option<Vec<OrderBookEntry>> = if self.bids.is_empty() {
             None
         } else {
@@ -108,7 +114,12 @@ impl OrderBook {
             }).collect())
         };
 
-        (bids, asks)
+        // Jeśli zarówno bids jak i asks są None, zwracamy None
+        if bids.is_none() && asks.is_none() {
+            None
+        } else {
+            Some(FullOrderBook { bids, asks })
+        }
     }
 }
 
@@ -168,10 +179,10 @@ mod tests {
         order_book.update(stream_data);
 
         // Get the full order book
-        let (bids, asks) = order_book.get_full_book();
+        let full_book = order_book.get_full_book().unwrap();
 
         // Verify bids
-        let bids = bids.unwrap();
+        let bids = full_book.bids.unwrap();
         assert_eq!(bids.len(), 2);
         assert_eq!(bids[0].price, 9990.0);
         assert_eq!(bids[0].qty, 0.5);
@@ -179,7 +190,7 @@ mod tests {
         assert_eq!(bids[1].qty, 1.0);
 
         // Verify asks
-        let asks = asks.unwrap();
+        let asks = full_book.asks.unwrap();
         assert_eq!(asks.len(), 2);
         assert_eq!(asks[0].price, 10100.0);
         assert_eq!(asks[0].qty, 2.0);
@@ -207,10 +218,5 @@ mod tests {
 
         // Verify that get_top() returns None for an empty book
         assert!(order_book.get_top().is_none());
-
-        // Verify that get_full_book() returns None for both bids and asks
-        let (bids, asks) = order_book.get_full_book();
-        assert!(bids.is_none());
-        assert!(asks.is_none());
     }
 }

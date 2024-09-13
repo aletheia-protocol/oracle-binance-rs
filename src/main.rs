@@ -7,9 +7,9 @@ mod config;
 use warp::Filter;
 use crate::ports::{ws_client_order_book, ws_client_trade};
 use crate::ports::ws_client_book_ticker;
-use crate::adapters::order_book_api::create_order_book_api;
-use crate::adapters::book_ticker_api::create_book_ticker_rest_api;
-use crate::adapters::trade_history_rest::create_trade_history_rest_api;
+use crate::adapters::rest::order_book_api::create_order_book_api;
+use crate::adapters::rest::book_ticker_api::create_book_ticker_rest_api;
+use crate::adapters::rest::trade_history_rest::create_trade_history_rest_api;
 use crate::config::CONFIG;
 
 
