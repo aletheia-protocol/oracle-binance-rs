@@ -21,6 +21,7 @@ pub trait BookTickerServiceTrait: Send + Sync {
 }
 
 // Implementation of BookTickerService
+#[derive(Debug)]
 pub struct BookTickerService;
 
 #[async_trait]

@@ -1,0 +1,27 @@
+syntax = "proto3";
+package book_ticker_proto;
+
+service BookTickerProtoService {
+  rpc GetTickerData (Empty) returns (TickerData);
+  rpc GetMidPrice (Empty) returns (MidPrice);
+  rpc GetMidWeightedPrice (Empty) returns (MidWeightedPrice);
+}
+
+message Empty {}
+
+message TickerData {
+  string symbol = 1;
+  int32 update_id = 2;
+  string best_bid_price = 3;
+  string best_bid_qty = 4;
+  string best_ask_price = 5;
+  string best_ask_qty = 6;
+}
+
+message MidPrice {
+  double mid_price = 1;
+}
+
+message MidWeightedPrice {
+  double mid_weighted_price = 1;
+}

@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use warp::Filter;
 use crate::core::book_ticker_service::{BookTickerServiceTrait, BookTickerService};
 
@@ -5,7 +6,7 @@ pub fn create_book_ticker_rest_api() -> impl Filter<Extract = impl warp::Reply, 
     // Route to get the full book ticker data
     let book_ticker_data = warp::path!("bookticker" / "data")
         .and_then(move || async move {
-            let service = BookTickerService;
+            let service = Arc::new(BookTickerService);
             let ticker_data = service.get_ticker_data().await;
 
             // Return the full book ticker data
