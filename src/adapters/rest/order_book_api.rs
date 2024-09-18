@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use warp::{Filter, Rejection};
 use warp::reply::Json;
 use crate::adapters::rest::service_error::ServiceError;
@@ -36,7 +37,7 @@ pub fn create_order_book_api() -> impl Filter<Extract = impl warp::Reply, Error 
 
     let orderbook_full = warp::path!("orderbook" / "full")
         .and_then(move || async move {
-            let service = OrderBookService;
+            let service = Arc::new(OrderBookService);
             match service.get_full_book().await{
                 Some(full_book) => {
                     Ok(warp::reply::json(&serde_json::json!({

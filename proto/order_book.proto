@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package order_book_proto;
+
+service OrderBookProtoService {
+  rpc UpdateOrderBook (OrderBookSD) returns (Empty);
+  rpc PrintTopOfBook (Empty) returns (Empty);
+  rpc GetTopOfBook (Empty) returns (OrderBookTop);
+  rpc GetFullBook (Empty) returns (FullOrderBook);
+}
+
+message Empty {}
+
+message OrderBookSD {
+  string stream = 1;
+  DepthData data = 2;
+}
+
+message DepthData {
+  uint64 last_update_id = 1;
+  repeated OrderBookLevel bids = 2;
+  repeated OrderBookLevel asks = 3;
+}
+
+message OrderBookLevel {
+  string price = 1;
+  string qty = 2;
+}
+
+message OrderBookTop {
+  OrderBookEntry best_bid = 1;
+  OrderBookEntry best_ask = 2;
+}
+
+message OrderBookEntry {
+  double price = 1;
+  double qty = 2;
+}
+
+message FullOrderBook {
+  repeated OrderBookEntry bids = 1;
+  repeated OrderBookEntry asks = 2;
+}
