@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use warp::Filter;
-use crate::core::book_ticker_service::{BookTickerServiceTrait, BookTickerService};
+use crate::domain::services::book_ticker_service::{BookTickerServiceTrait, BookTickerService};
 
 pub fn create_book_ticker_rest_api() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     // Route to get the full book ticker data

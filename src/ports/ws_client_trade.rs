@@ -4,8 +4,8 @@ use binance_spot_connector_rust::tokio_tungstenite::BinanceWebSocketClient;
 use futures_util::StreamExt;
 use log;
 use tokio::time::{sleep, Duration};
-use crate::core::trade_history_service::TradeHistoryService;
-use crate::domain::trade::{TradeSD};
+use crate::domain::services::trade_history_service::TradeHistoryService;
+use crate::domain::entities::trade::{TradeSD};
 
 pub async fn start_websocket() {
     let service = TradeHistoryService;

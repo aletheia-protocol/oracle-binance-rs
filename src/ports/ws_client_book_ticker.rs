@@ -4,8 +4,8 @@ use binance_spot_connector_rust::tokio_tungstenite::BinanceWebSocketClient;
 use futures_util::StreamExt;
 use log;
 use tokio::time::{sleep, Duration};
-use crate::core::book_ticker_service::{BookTickerService, BookTickerServiceTrait};
-use crate::domain::book_ticker::BookTickerSD;
+use crate::domain::services::book_ticker_service::{BookTickerService, BookTickerServiceTrait};
+use crate::domain::entities::book_ticker::BookTickerSD;
 
 pub async fn start_websocket() {
     let service = BookTickerService;

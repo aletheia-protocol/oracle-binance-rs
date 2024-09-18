@@ -3,7 +3,7 @@ use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use crate::domain::trade::{TradeData, TradeSD};
+use crate::domain::entities::trade::{TradeData, TradeSD};
 
 // Static singleton for global trade history storage
 pub static TRADE_HISTORY: Lazy<Arc<Mutex<VecDeque<TradeData>>>> = Lazy::new(|| {

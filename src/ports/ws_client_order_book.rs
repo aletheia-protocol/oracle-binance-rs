@@ -1,5 +1,5 @@
-use crate::core::order_book_service::{OrderBookService, OrderBookServiceTrait};
-use crate::domain::order_book_sd::OrderBookSD;
+use crate::domain::services::order_book_service::{OrderBookService, OrderBookServiceTrait};
+use crate::domain::entities::order_book::OrderBookSD;
 use crate::config::CONFIG;
 use binance_spot_connector_rust::market_stream::partial_depth::PartialDepthStream;
 use binance_spot_connector_rust::tokio_tungstenite::BinanceWebSocketClient;

@@ -1,5 +1,4 @@
 mod domain;
-mod core;
 mod adapters;
 mod ports;
 mod config;
@@ -14,7 +13,7 @@ use crate::adapters::rest::order_book_api::create_order_book_api;
 use crate::adapters::rest::book_ticker_api::create_book_ticker_rest_api;
 use crate::adapters::rest::trade_history_rest::create_trade_history_rest_api;
 use crate::config::CONFIG;
-use crate::core::book_ticker_service::BookTickerService;
+use crate::domain::services::book_ticker_service::BookTickerService;
 
 #[tokio::main]
 async fn main() {

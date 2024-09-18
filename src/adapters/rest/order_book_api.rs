@@ -1,9 +1,9 @@
 use warp::{Filter, Rejection};
 use warp::reply::Json;
 use crate::adapters::rest::service_error::ServiceError;
-use crate::core::order_book_service::OrderBookServiceTrait;
-use crate::core::order_book_service::OrderBookService;
-use crate::domain::order_book::OrderBookEntry;
+use crate::domain::services::order_book_service::OrderBookServiceTrait;
+use crate::domain::services::order_book_service::OrderBookService;
+use crate::domain::entities::order_book::OrderBookEntry;
 
 pub fn create_order_book_api() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     let orderbook_top = warp::path!("orderbook" / "top")

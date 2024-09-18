@@ -1,5 +1,5 @@
 use warp::Filter;
-use crate::core::trade_history_service::TradeHistoryService;
+use crate::domain::services::trade_history_service::TradeHistoryService;
 
 pub fn create_trade_history_rest_api() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     // Route to get the average volume per trade

@@ -1,8 +1,21 @@
 use std::collections::BTreeMap;
 use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
-use crate::domain::order_book_sd::OrderBookSD;
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DepthData {
+    #[serde(rename = "lastUpdateId")]
+    pub last_update_id: u64,
+    pub bids: Vec<[String; 2]>,
+    pub asks: Vec<[String; 2]>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct OrderBookSD {
+    #[allow(dead_code)]
+    pub stream: String,
+    pub data: DepthData,
+}
 
 // Struct representing the order book with bids and asks
 pub struct OrderBook {

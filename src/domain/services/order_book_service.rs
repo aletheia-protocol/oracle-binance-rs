@@ -3,8 +3,7 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use crate::domain::order_book::{FullOrderBook, OrderBook, OrderBookTop};
-use crate::domain::order_book_sd::OrderBookSD;
+use crate::domain::entities::order_book::{FullOrderBook, OrderBook, OrderBookTop, OrderBookSD};
 
 pub static ORDER_BOOK: Lazy<Arc<Mutex<OrderBook>>> = Lazy::new(|| {
     Arc::new(Mutex::new(OrderBook::new()))

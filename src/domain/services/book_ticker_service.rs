@@ -3,7 +3,7 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use tokio::sync::Mutex;
-use crate::domain::book_ticker::{BookTickerData, BookTickerSD};
+use crate::domain::entities::book_ticker::{BookTickerData, BookTickerSD};
 
 // Singleton for BookTickerData shared across the application
 pub static BOOK_TICKER: Lazy<Arc<Mutex<BookTickerData>>> = Lazy::new(|| {

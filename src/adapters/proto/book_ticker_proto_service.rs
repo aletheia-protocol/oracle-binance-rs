@@ -3,7 +3,7 @@ use adapters::proto::book_ticker_proto::book_ticker_proto_service_server::{BookT
 use adapters::proto::book_ticker_proto::{Empty, TickerData, MidPrice, MidWeightedPrice};
 use std::sync::Arc;
 use crate::adapters;
-use crate::core::book_ticker_service::BookTickerServiceTrait; // Zaimportuj swój serwis
+use crate::domain::services::book_ticker_service::BookTickerServiceTrait; // Zaimportuj swój serwis
 
 pub mod book_ticker_proto {
     tonic::include_proto!("book_ticker_proto"); // Wygenerowany kod gRPC
