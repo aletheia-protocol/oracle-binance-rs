@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package trade_history_proto;
+
+// gRPC service
+service TradeHistoryProtoService {
+  // Adds a trade to the history
+  rpc AddTrade (TradeSD) returns (Empty);
+
+  // Returns the average volume per trade within the last 60 seconds
+  rpc GetAverageVolumePerTrade (Empty) returns (AverageVolume);
+
+  // Returns the total volume of trades within the last 60 seconds
+  rpc GetTotalVolume (Empty) returns (TotalVolume);
+}
+
+// Empty message
+message Empty {}
+
+// Message representing TradeSD (corresponding to TradeSD in the Rust entity)
+message TradeSD {
+  string stream = 1;
+  TradeData data = 2;
+}
+
+// Message representing TradeData (corresponding to TradeData in the Rust entity)
+message TradeData {
+  string event_type = 1;
+  uint64 event_time = 2;
+  string symbol = 3;
+  uint64 trade_id = 4;
+  string price = 5;
+  string quantity = 6;
+  uint64 trade_time = 7;
+  bool is_buyer_market_maker = 8;
+  bool ignore = 9;
+}
+
+// Message representing the average trade volume
+message AverageVolume {
+  double average_volume = 1;
+}
+
+// Message representing the total trade volume
+message TotalVolume {
+  double total_volume = 1;
+}

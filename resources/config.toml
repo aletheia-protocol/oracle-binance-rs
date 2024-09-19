@@ -1,5 +1,6 @@
 [default]
-server_port = 8080
+server_port_http = 8080
+server_port_grpc = 50051
 trading_pair = "BTCFDUSD"
 book_depth = 10 #can be 5,10,20 - nothing else
 ws_config_retry_count = 10

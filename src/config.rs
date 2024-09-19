@@ -7,14 +7,16 @@ use once_cell::sync::Lazy;
 
 #[derive(Debug, Deserialize)]
 pub struct DefaultConfig {
-    pub server_port: u16,
+    pub server_port_http: u16,
+    pub server_port_grpc: u16,
     pub trading_pair: String,
     pub book_depth: u16,
     pub ws_config_retry_max: u16,
 }
 
 enum EnvVar {
-    ServerPort,
+    ServerPortHTTP,
+    ServerPortGRPC,
     TradingPair,
     BookDepth,
     WSConfigRetryMax
@@ -41,7 +43,8 @@ impl EnvVar {
     // Returns the environment variable name as a &str
     fn as_str(&self) -> &str {
         match self {
-            EnvVar::ServerPort => "SERVER_PORT",
+            EnvVar::ServerPortHTTP => "SERVER_PORT_HTTP",
+            EnvVar::ServerPortGRPC => "SERVER_PORT_GRPC",
             EnvVar::TradingPair => "TRADING_PAIR",
             EnvVar::BookDepth => "BOOK_DEPTH",
             EnvVar::WSConfigRetryMax => "WS_CONFIG_RETRY_MAX"
@@ -79,8 +82,12 @@ pub fn load_config_from_env_or_file() -> Result<AppConfig, Box<dyn Error>> {
     let mut config = load_config()?;
 
     // Override with environment variables if they exist
-    config.default.server_port = EnvVar::ServerPort
-        .get_value(&config.default.server_port); // u16 for server_port
+    config.default.server_port_http = EnvVar::ServerPortHTTP
+        .get_value(&config.default.server_port_http); // u16 for server_port_http
+
+    // Override with environment variables if they exist
+    config.default.server_port_grpc = EnvVar::ServerPortGRPC
+        .get_value(&config.default.server_port_grpc); // u16 for server_port_grpc
 
     config.default.trading_pair = EnvVar::TradingPair
         .get_value(&config.default.trading_pair); // String for trading_pair

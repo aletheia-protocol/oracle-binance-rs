@@ -8,6 +8,7 @@ use tonic::transport::Server;
 use warp::Filter;
 use crate::adapters::proto::book_ticker_proto_service;
 use crate::adapters::proto::order_book_proto_service;
+use crate::adapters::proto::trade_history_proto_service;
 use crate::ports::{ws_client_order_book, ws_client_trade};
 use crate::ports::ws_client_book_ticker;
 use crate::adapters::rest::order_book_api::create_order_book_api;
@@ -16,6 +17,7 @@ use crate::adapters::rest::trade_history_rest::create_trade_history_rest_api;
 use crate::config::CONFIG;
 use crate::domain::services::book_ticker_service::BookTickerService;
 use crate::domain::services::order_book_service::OrderBookService;
+use crate::domain::services::trade_history_service::TradeHistoryService;
 
 #[tokio::main]
 async fn main() {
@@ -27,6 +29,7 @@ async fn main() {
 
     let book_ticker_service = Arc::new(BookTickerService);
     let order_book_service = Arc::new(OrderBookService);
+    let trade_history_service = Arc::new(TradeHistoryService);
 
     // Start both WebSocket and REST API in the same Tokio runtime using join!
     let websocket_order_book_handle = tokio::spawn(async {
@@ -47,23 +50,26 @@ async fn main() {
 
 
     let rest_api_handle = tokio::spawn(async {
-        log::info!("Starting REST API server on port {} ...", CONFIG.default.server_port);
+        log::info!("Starting REST API server on port {} ...", CONFIG.default.server_port_http);
         let api = create_order_book_api()
             .or(create_book_ticker_rest_api())
             .or(create_trade_history_rest_api());
-        warp::serve(api).run(([0, 0, 0, 0], CONFIG.default.server_port)).await;
+        warp::serve(api).run(([0, 0, 0, 0], CONFIG.default.server_port_http)).await;
     });
 
     let grpc_service_handle = tokio::spawn(async move {
-        let addr = "[::1]:50051".parse().unwrap();
+        let addr = format!("0.0.0.0:{}", CONFIG.default.server_port_grpc).parse().unwrap();
         let grpc_book_ticker_service = book_ticker_proto_service::create_book_ticker_service(book_ticker_service.clone());
-        let grpc_order_book_service = order_book_proto_service::create_order_book_service(order_book_service.clone()); // Dodanie serwisu OrderBook
+        let grpc_order_book_service = order_book_proto_service::create_order_book_service(order_book_service.clone());
+        let grpc_trade_history_service = trade_history_proto_service::create_trade_history_service(trade_history_service.clone());
 
 
-        log::info!("Starting gRPC BookTicker service on {}", addr);
+
+        log::info!("Starting gRPC service on {}", addr);
         Server::builder()
             .add_service(grpc_book_ticker_service)
             .add_service(grpc_order_book_service)
+            .add_service(grpc_trade_history_service)
             .serve(addr)
             .await
             .unwrap();

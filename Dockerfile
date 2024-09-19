@@ -4,6 +4,12 @@ FROM rust:1.81.0 AS builder
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
+# Install protobuf compiler (protoc)
+RUN apt-get update && \
+    apt-get install -y protobuf-compiler && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy the Cargo.toml and Cargo.lock files to fetch dependencies
 COPY Cargo.toml Cargo.lock ./
 
@@ -38,9 +44,6 @@ WORKDIR /usr/src/app
 
 # Copy the configuration file into the container
 COPY resources/config.toml ./resources/
-
-# Expose port 8080 to allow access from outside the container
-EXPOSE 8080
 
 # Command to run the application
 CMD ["oracle_binance"]
